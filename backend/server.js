@@ -15,7 +15,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK' });
+  res.json({ success: true, data: { status: 'ok' } });
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: { code: 'NOT_FOUND', message: 'Route not found.' },
+  });
 });
 
 async function startServer() {
