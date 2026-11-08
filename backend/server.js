@@ -25,6 +25,30 @@ app.use((req, res) => {
   });
 });
 
+function errorHandler(err, req, res, next) {
+  let statusCode = 500;
+  if (err.status ) {
+    statusCode = err.status;
+  }
+  let code = 'BAD_REQUEST';
+  let message = 'Invalid request.';
+  if (statusCode >= 500) {
+    code = 'INTERNAL_ERROR';
+    message = 'Internal server error.';
+  }
+
+  res.status(statusCode);
+  res.json({
+    success: false,
+    error: {
+      code: code,
+      message: message,
+    },
+  });
+}
+
+app.use(errorHandler);
+
 async function startServer() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
