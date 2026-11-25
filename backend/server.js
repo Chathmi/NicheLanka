@@ -21,6 +21,8 @@ app.get('/api/health', (req, res) => {
 const authRouter = require('./routes/auth');
 app.use('/api/auth', authRouter);
 
+app.use('/api/attractions', require('./routes/attractionRoutes'));
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
