@@ -18,6 +18,9 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, data: { status: 'ok' } });
 });
 
+const authRouter = require('./routes/auth');
+app.use('/api/auth', authRouter);
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -34,7 +37,7 @@ function errorHandler(err, req, res, next) {
   let message = 'Invalid request.';
   if (statusCode >= 500) {
     code = 'INTERNAL_ERROR';
-    message = 'Internal server error.';
+    message = 'Internal server error.'; 
   }
 
   res.status(statusCode);
@@ -62,5 +65,4 @@ async function startServer() {
     process.exit(1);
   }
 }
-
 startServer();
