@@ -18,6 +18,9 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, data: { status: 'ok' } });
 });
 
+const authRouter = require('./routes/auth');
+app.use('/api/auth', authRouter);
+
 app.use('/api/attractions', require('./routes/attractionRoutes'));
 
 app.use((req, res) => {
@@ -26,6 +29,30 @@ app.use((req, res) => {
     error: { code: 'NOT_FOUND', message: 'Route not found.' },
   });
 });
+
+function errorHandler(err, req, res, next) {
+  let statusCode = 500;
+  if (err.status ) {
+    statusCode = err.status;
+  }
+  let code = 'BAD_REQUEST';
+  let message = 'Invalid request.';
+  if (statusCode >= 500) {
+    code = 'INTERNAL_ERROR';
+    message = 'Internal server error.'; 
+  }
+
+  res.status(statusCode);
+  res.json({
+    success: false,
+    error: {
+      code: code,
+      message: message,
+    },
+  });
+}
+
+app.use(errorHandler);
 
 async function startServer() {
   try {
@@ -40,5 +67,4 @@ async function startServer() {
     process.exit(1);
   }
 }
-
 startServer();
